@@ -1,6 +1,4 @@
-function CreateGame() {
-    PicturesPerCard = $('#picturesNumber').val();
-    ThisPseudo = $('#pseudoCreateGame').val();
+function CallCreateGame() {
     $.ajax({
         url: '/Game/Create',
         type: 'POST',
@@ -9,7 +7,7 @@ function CreateGame() {
     });
 }
 
-function JoinGame() {
+function CallJoinGame() {
     GameId = $('#gameIdJoinGame').val().toUpperCase();
     ThisPseudo = $('#pseudoJoinGame').val();
     $.ajax({
@@ -21,7 +19,7 @@ function JoinGame() {
     });
 }
 
-function InvitGame() {
+function CallInvitGame() {
     ThisPseudo = $('#pseudoInvitGame').val();
     $.ajax({
         url: '/Game/Join',
@@ -31,7 +29,7 @@ function InvitGame() {
     });
 }
 
-function JoinGameAsAdditionalDevice() {
+function CallJoinGameAsAdditionalDevice() {
     GameId = $('#gameIdJoinGameAsAdditionalDevice').val().toUpperCase();
     $.ajax({
         url: '/Game/JoinAsAdditionalDevice',
@@ -41,7 +39,7 @@ function JoinGameAsAdditionalDevice() {
     });
 }
 
-function StartGame() {
+function CallStartGame() {
     $.ajax({
         url: '/Game/Start',
         type: 'POST',
@@ -69,7 +67,7 @@ function GetCardsPlayer() {
     });
 }
 
-function TouchCard(valueTouch) {
+function CallTouchCard(valueTouch) {
     PictureClickUnsubscribe();
     $.ajax({
         url: '/Game/Touch',

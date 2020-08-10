@@ -10,6 +10,7 @@ var Url
 var ModeInvitGame
 var GameId;
 var ThisPseudo;
+var GameMode; // rowMode, likeDubbleMode
 var PseudosInGame = [];
 var ThisAdditionalDevice;
 var AdditionalDevices = [];
@@ -24,15 +25,21 @@ var Decounter;
 
 function Init() {
     $('#createGameForm').submit(function () { CreateGame(); });
-    $('#joinGameForm').submit(function () { JoinGame(); });
-    $('#invitGameForm').submit(function () { InvitGame(); });
-    //$('#joinGameAsAdditionalDeviceForm').submit(function () { JoinGameAsAdditionalDevice(); }); // voir pour autre sprint si principe retenu
-    $('#joinDeviceGameForm').submit(function () { JoinGameAsAdditionalDevice(); });
-    $('#startGameButton').click(function () { StartGame(); });
+    $('#joinGameForm').submit(function () { CallJoinGame(); });
+    $('#invitGameForm').submit(function () { CallInvitGame(); });
+    $('#joinDeviceGameForm').submit(function () { CallJoinGameAsAdditionalDevice(); });
+    $('#startGameButton').click(function () { CallStartGame(); });
     ShowOrHideSections();
 }
 
-function PictureClickSubscribe() { $('.pictureClick').click(function () { TouchCard(this.attributes['value'].value); }); }
+function CreateGame() {
+    PicturesPerCard = $('#picturesNumber').val();
+    ThisPseudo = $('#pseudoCreateGame').val();
+    GameMode = $('#gameMode').val();
+    CallCreateGame();
+}
+
+function PictureClickSubscribe() { $('.pictureClick').click(function () { CallTouchCard(this.attributes['value'].value); }); }
 
 function PictureClickUnsubscribe() { $('.pictureClick').off("click"); }
 

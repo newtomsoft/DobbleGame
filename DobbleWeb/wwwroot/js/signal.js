@@ -3,7 +3,7 @@ var ConnectionHubGame;
 function CallSignalR() {
     ConnectionHubGame = new signalR.HubConnectionBuilder().withUrl("/hubGame").withAutomaticReconnect().build();
     ConnectionHubGame.start().catch(function (err) { return console.error(err.toString()); });
-    ConnectionHubGame.on("ReceivePlayersInGame", function (pseudos) { ReceivePlayersInGame(pseudos); });
+    ConnectionHubGame.on("ReceivePlayersInGame", function (pseudos, gameMode) { ReceivePlayersInGame(pseudos, gameMode); });
     ConnectionHubGame.on("ReceiveAdditionalDeviceInGame", function (additionalDevices) { ReceiveAdditionalDeviceInGame(additionalDevices); });
     ConnectionHubGame.on("ReceiveStartGame", function (centerCard, picturesNames) { ReceiveStartGame(centerCard, picturesNames); });
     ConnectionHubGame.on("ReceiveChangeCenterCard", function (pseudo, centerCard) { ReceiveChangeCenterCard(pseudo, centerCard); });
@@ -12,7 +12,7 @@ function CallSignalR() {
 
 //Send
 function SendPlayerInGame() {
-    ConnectionHubGame.invoke("HubPlayerInGame", GameId, ThisPseudo).catch(function (err) { return console.error(err.toString()); });
+    ConnectionHubGame.invoke("HubPlayerInGame", GameId, ThisPseudo, GameMode).catch(function (err) { return console.error(err.toString()); });
 };
 
 function SendAdditionalDeviceInGame() {
@@ -33,7 +33,8 @@ function SendGameFinished() {
 };
 
 //Receive
-async function ReceivePlayersInGame(pseudos) {
+async function ReceivePlayersInGame(pseudos, gameMode) {
+    GameMode = gameMode;
     ShowPlayersInGame(pseudos);
     ShowOrHideSections();
 }

@@ -6,21 +6,21 @@ namespace SignalR.Hubs
 {
     public class HubSignal : Hub
     {
-        static private Dictionary<string, List<string>> GameId_Pseudos { get; set; }
-        static private Dictionary<string, List<string>> GameId_AdditionalDevices { get; set; }
+        static private Dictionary<string, List<string>> GameId_Pseudos { get; set; } = new Dictionary<string, List<string>>();
+        static private Dictionary<string, string> GameId_GameMode { get; set; } = new Dictionary<string, string>();
+        static private Dictionary<string, List<string>> GameId_AdditionalDevices { get; set; } = new Dictionary<string, List<string>>();
 
-        public async Task HubPlayerInGame(string gameId, string pseudo)
+        public async Task HubPlayerInGame(string gameId, string pseudo, string gameMode)
         {
-            GameId_Pseudos ??= new Dictionary<string, List<string>>();
             GameId_Pseudos.TryAdd(gameId, new List<string>());
             GameId_Pseudos[gameId].Add(pseudo);
+            GameId_GameMode.TryAdd(gameId, gameMode);
             await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
-            await Clients.Group(gameId).SendAsync("ReceivePlayersInGame", GameId_Pseudos[gameId]);
+            await Clients.Group(gameId).SendAsync("ReceivePlayersInGame", GameId_Pseudos[gameId], GameId_GameMode[gameId]);
         }
 
         public async Task HubAdditionalDeviceInGame(string gameId, string additionalDevice)
         {
-            GameId_AdditionalDevices ??= new Dictionary<string, List<string>>();
             GameId_AdditionalDevices.TryAdd(gameId, new List<string>());
             GameId_AdditionalDevices[gameId].Add(additionalDevice);
             await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
