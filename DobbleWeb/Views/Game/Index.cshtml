@@ -1,0 +1,81 @@
+﻿@{
+    Layout = "_LayoutGame.cshtml";
+    ViewData["Title"] = "Jouer";
+}
+
+<section id="createJoinGameSection" style="display:none">
+    <h3>Créer une partie</h3>
+    <form id="createGameForm" action="javascript:void(0);">
+        <div class="form-group">
+            <label class="control-label">Votre pseudo</label>
+            <input id="pseudoCreateGame" name="pseudoCreateGame" class="form-control" type="text" value="" required />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Nombre d'images par carte</label>
+            <input id="picturesNumber" name="picturesNumber" class="form-control" type="number" value="8" required />
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Créer la partie" />
+        </div>
+    </form>
+    <h3>Rejoindre une partie</h3>
+    <form id="joinGameForm" action="javascript:void(0);">
+        <div class="form-group">
+            <label class="control-label">Votre pseudo</label>
+            <input id="pseudoJoinGame" class="form-control" type="text" value="" required />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Identifiant de la partie</label>
+            <input id="gameIdJoinGame" class="form-control" type="text" value="" required />
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Rejoindre la partie" />
+        </div>
+    </form>
+    <div id="errorJoinGame"></div>
+    @* todo : appareil additionel à ajouter en dernier tel que codé *@
+    @*<h3>Ajouter un appareil additionnel </h3>
+        <form id="joinDeviceGameForm" action="javascript:void(0);">
+            <div class="form-group">
+                <label class="control-label">Identifiant de la partie</label>
+                <input id="gameIdJoinGameAsAdditionalDevice" class="form-control" type="text" value="" required />
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Ajouter l'appareil additionelle" />
+            </div>
+        </form>*@
+</section>
+
+<section id="invitGameSection" style="display:none">
+    <h3 id="invitGameSectionTitle"></h3>
+    <form id="invitGameForm" action="javascript:void(0);">
+        <div class="form-group">
+            <label class="control-label">Votre pseudo</label>
+            <input id="pseudoInvitGame" class="form-control" type="text" value="" required />
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Rejoindre la partie" />
+        </div>
+    </form>
+</section>
+
+<section id="gameSection" style="display:none">
+    <div id="gameIdInfo"></div>
+    <div id="gameIdWhatsapp"></div>
+    <div id="pseudos"></div>
+    <div id="startGame">
+        <button id="startGameButton" class="btn-outline-primary">Commencer la partie !</button>
+    </div>
+    <div id="startGameWait"></div>
+    <br />
+    <div id="centerCard">
+        <p>Pile centrale</p>
+        <div id="centerCardPicture"></div>
+    </div>
+    <br />
+    <div id="playerCard">
+        <p>Votre pile</p>
+        <div id="playerCardPicture"></div>
+    </div>
+    <div id="cardsNumber"></div>
+</section>
