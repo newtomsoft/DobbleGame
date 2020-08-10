@@ -12,7 +12,23 @@
         </div>
         <div class="form-group">
             <label class="control-label">Nombre d'images par carte</label>
-            <input id="picturesNumber" name="picturesNumber" class="form-control" type="number" value="8" required />
+            <select id="picturesNumber" name="picturesNumber" class="form-control">
+                <option>3</option>
+                <option>4</option>
+                <option>6</option>
+                <option selected>8</option>
+                <option>12</option>
+                <option disabled>14</option>
+                <option disabled>18</option>
+                <option disabled>20</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Disposition des images</label>
+            <select id="gameMode" name="gameMode" class="form-control">
+                <option>en ligne</option>
+                <option disabled>de différentes tailles (à venir)</option>
+            </select>
         </div>
         <div class="form-group">
             <input type="submit" class="btn btn-primary" value="Créer la partie" />
