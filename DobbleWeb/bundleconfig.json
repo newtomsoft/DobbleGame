@@ -1,0 +1,27 @@
+[
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css",
+      "wwwroot/css/cardpictures.css"
+    ],
+    "minify": {
+      "enabled": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/game.min.js",
+    "inputFiles": [
+      "wwwroot/js/game.js",
+      "wwwroot/js/ajaxCall.js",
+      "wwwroot/js/ajaxCallback.js",
+      "wwwroot/js/signal.js",
+      "wwwroot/js/preload.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]
