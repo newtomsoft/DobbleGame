@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   height="512"
+   width="411.66684"
+   sodipodi:docname="flask.svg"
+   xml:space="preserve"
+   viewBox="0 0 411.66684 512"
+   y="0px"
+   x="0px"
+   id="Capa_1"
+   version="1.1"><metadata
+   id="metadata77"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs75" /><sodipodi:namedview
+   inkscape:current-layer="Capa_1"
+   inkscape:window-maximized="0"
+   inkscape:window-y="0"
+   inkscape:window-x="0"
+   inkscape:cy="256"
+   inkscape:cx="205.83343"
+   inkscape:zoom="0.59154993"
+   showgrid="false"
+   id="namedview73"
+   inkscape:window-height="480"
+   inkscape:window-width="744"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0"
+   guidetolerance="10"
+   gridtolerance="10"
+   objecttolerance="10"
+   borderopacity="1"
+   bordercolor="#666666"
+   pagecolor="#ffffff" />
+<g
+   transform="translate(-50.166575)"
+   id="g6">
+	<path
+   id="path2"
+   d="M 455.828,443.01 334.599,227.309 c -4.615,-8.212 -7.039,-17.473 -7.039,-26.893 V 63.1 H 184.44 v 137.316 c 0,9.42 -2.424,18.681 -7.039,26.893 L 56.172,443.01 C 38.825,473.876 61.131,512 96.537,512 h 318.925 c 35.407,0 57.713,-38.124 40.366,-68.99 z"
+   style="fill:#76c9d2" />
+	<path
+   id="path4"
+   d="M 337.263,63.1 H 174.737 c -7.17,0 -12.983,-5.813 -12.983,-12.983 V 12.983 C 161.754,5.813 167.567,0 174.737,0 h 162.527 c 7.17,0 12.983,5.813 12.983,12.983 V 50.118 C 350.246,57.287 344.433,63.1 337.263,63.1 Z"
+   style="fill:#76c9d2" />
+</g>
+<path
+   id="path8"
+   d="m 287.09643,0 h -24.3 c 7.17,0 12.983,5.813 12.983,12.983 v 37.135 c 0,7.17 -5.813,12.983 -12.983,12.983 h 24.3 c 7.17,0 12.983,-5.813 12.983,-12.983 V 12.983 c 0,-7.17 -5.813,-12.983 -12.983,-12.983 z"
+   style="opacity:0.1;enable-background:new" />
+<path
+   id="path10"
+   d="m 405.66143,443.01 -115.635,-205.748 c -7.344,1.647 -14.546,4.16 -21.448,7.552 l -38.584,18.961 c -30.069,14.776 -65.649,12.907 -94.004,-4.94 v 0 c -6.624,-4.169 -13.65,-7.469 -20.915,-9.889 L 6.0054253,443.01 C -11.341575,473.876 10.964425,512 46.370425,512 H 365.29543 c 35.407,0 57.713,-38.124 40.366,-68.99 z"
+   style="fill:#507cdd" />
+<path
+   id="path12"
+   d="m 277.39343,112.368 v -15 h -33.277 c -4.142,0 -7.5,3.358 -7.5,7.5 0,4.142 3.358,7.5 7.5,7.5 z m 0,52.431 v -15 h -26.452 c -4.142,0 -7.5,3.358 -7.5,7.5 0,4.142 3.358,7.5 7.5,7.5 z m 51.878,142.292 h -57.858 c -4.142,0 -7.5,3.358 -7.5,7.5 0,4.142 3.358,7.5 7.5,7.5 h 66.288 z m -21.036,-37.43 -8.43,-15 h -35.215 c -4.142,0 -7.5,3.358 -7.5,7.5 0,4.142 3.358,7.5 7.5,7.5 z m -28.198,-52.431 c -1.558,-4.841 -2.445,-9.888 -2.613,-15 h -19.659 c -4.142,0 -7.5,3.358 -7.5,7.5 0,4.142 3.358,7.5 7.5,7.5 z"
+   style="fill:#394049" />
+<path
+   id="path14"
+   d="m 405.66143,443.01 -121.229,-215.701 c -4.615,-8.212 -7.039,-17.473 -7.039,-26.893 V 63.1 h -143.12 v 41.586 h 103.114 v 95.73 c 0,9.42 2.424,18.681 7.04,26.893 l 121.229,215.701 c 17.347,30.866 -4.958,68.99 -40.365,68.99 h 40.005 c 35.406,0 57.712,-38.124 40.365,-68.99 z"
+   style="opacity:0.1;enable-background:new" />
+
+<g
+   transform="translate(-50.166575)"
+   id="g32"
+   style="opacity:0.1">
+	<circle
+   id="circle24"
+   r="7.5120001"
+   cy="314.59"
+   cx="188.64" />
+	<circle
+   id="circle26"
+   r="7.5120001"
+   cy="443.04999"
+   cx="114.11" />
+	<circle
+   id="circle28"
+   r="7.5120001"
+   cy="472.94"
+   cx="282.37" />
+	<circle
+   id="circle30"
+   r="7.5120001"
+   cy="415.85999"
+   cx="399.88" />
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g40"
+   style="opacity:0.3">
+	<circle
+   id="circle34"
+   r="7.5120001"
+   cy="292.26001"
+   cx="289.88"
+   style="fill:#ffffff" />
+	<circle
+   id="circle36"
+   r="7.5120001"
+   cy="461.57001"
+   cx="379.04999"
+   style="fill:#ffffff" />
+	<circle
+   id="circle38"
+   r="7.5120001"
+   cy="446.54999"
+   cx="188.64"
+   style="fill:#ffffff" />
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g42">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g44">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g46">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g48">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g50">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g52">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g54">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g56">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g58">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g60">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g62">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g64">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g66">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g68">
+</g>
+<g
+   transform="translate(-50.166575)"
+   id="g70">
+</g>
+</svg>
