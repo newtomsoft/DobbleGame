@@ -29,15 +29,13 @@ namespace DobbleManager
             return gameId;
         }
 
-        public TouchResponse Touch(string gameId, string playerGuid, DobbleCard cardPlayed, int valueTouch, DobbleCard centerCard, TimeSpan timeTakenToTouch)
+        public TouchResponse Touch(string gameId, string playerGuid, DobbleCard cardPlayed, int valueTouch, TimeSpan timeTakenToTouch)
         {
             lock (GameManagers[gameId].GameManagerLock)
             {
+                var centerCard = GameManagers[gameId].CenterCard;
                 if (cardPlayed != GameManagers[gameId].GetCurrentCard(playerGuid))
                     return new TouchResponse(TouchStatus.CardPlayedDontExist);
-
-                if (centerCard != GameManagers[gameId].CenterCard)
-                    return new TouchResponse(TouchStatus.ToLate);
 
                 if (centerCard.PicturesIds.Any(value => value == valueTouch))
                 {

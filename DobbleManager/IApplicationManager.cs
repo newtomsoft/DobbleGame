@@ -10,6 +10,6 @@ namespace DobbleManager
         public int JoinGameManager(string gameId);
 
         void FreeGameManager(string gameId);
-        TouchResponse Touch(string gameId, string playerGuid, DobbleCard cardPlayed, int valueTouch, DobbleCard centerCard, TimeSpan timeTakenToTouch);
+        TouchResponse Touch(string gameId, string playerGuid, DobbleCard cardPlayed, int valueTouch, TimeSpan timeTakenToTouch);
     }
 }

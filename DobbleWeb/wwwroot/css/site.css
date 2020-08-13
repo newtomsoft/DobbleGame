@@ -20,8 +20,8 @@ a {
     border-color: #1861ac;
 }
 
-.img-1 {
-    background-image: url('/pictures/cardPictures/1.svg');
+.cloth {
+    z-index: 1;
 }
 
 #decounter {

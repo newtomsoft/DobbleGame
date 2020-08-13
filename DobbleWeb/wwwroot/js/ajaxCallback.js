@@ -1,20 +1,26 @@
 ﻿function CallbackCreateOrJoinGame(data) {
     GameId = data.gameId;
     PicturesPerCard = data.picturesPerCard;
+    GamePicturesNumber = PicturesPerCard * PicturesPerCard - PicturesPerCard + 1;
+    PicturesNames = data.picturesNames;
+    LoadAllCardPictures();
     SendPlayerInGame();
-    ThisPlayerGuid = data.playerGuid;
+    PlayerAdded = data.playerAdded;
     ShowGameIdInfo();
 }
 
 function CallbackJoinGameAsAdditionalDevice(data) {
     ThisAdditionalDevice = data.additionalDevice;
     PicturesPerCard = data.picturesPerCard;
+    GamePicturesNumber = PicturesPerCard * PicturesPerCard - PicturesPerCard + 1;
+    PicturesNames = data.picturesNames;
+    LoadAllCardPictures();
     SendAdditionalDeviceInGame();
     ShowOrHideSections("additionalDevice");
 }
 
 function CallbackStartGame(data) {
-    SendStartGame(data.centerCard, data.picturesNames);
+    SendStartGame(data.centerCard);
 }
 
 function CallbackGetCenterCard(data) {
@@ -34,7 +40,7 @@ function CallbackTouch(data) {
         SendChangeCenterCard(data.centerCard);
     }
     else if (data.status === 2) {// game finished
-        SendGameFinished(ThisPseudo);
+        SendGameFinished(Pseudo);
     }
     else {
         let delayInMilliseconds = 1000;

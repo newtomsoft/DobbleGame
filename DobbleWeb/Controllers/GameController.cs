@@ -25,32 +25,34 @@ namespace DobblePOC.Controllers
             => View();
 
         [HttpPost]
-        public IActionResult Create(int picturesPerCard)
+        public IActionResult Create(int picturesPerCard, string playerId)
         {
             var picturesNames = GetRandomPicturesNames(picturesPerCard * picturesPerCard - picturesPerCard + 1);
             string gameId = ApplicationManager.CreateGameManager(picturesPerCard, picturesNames);
             if (gameId == string.Empty)
                 return new BadRequestObjectResult(new { error = $"Le nombre d'images par carte {picturesPerCard} n'est pas valide !" });
-            string playerGuid = AddNewPlayer(gameId);
-            return new JsonResult(new { gameId, playerGuid, picturesPerCard });
+            var playerAdded = AddNewPlayer(gameId, playerId);
+            return new JsonResult(new { gameId, playerAdded, picturesPerCard, picturesNames });
         }
 
         [HttpPost]
-        public IActionResult Join(string gameId)
+        public IActionResult Join(string gameId, string playerId)
         {
             int picturesPerCard = ApplicationManager.JoinGameManager(gameId);
+            var picturesNames = ApplicationManager.GameManagers[gameId].PicturesNames;
             if (picturesPerCard == 0)
                 return new BadRequestObjectResult(new { error = $"La partie d'id {gameId} n'existe pas !" });
-            string playerGuid = AddNewPlayer(gameId);
-            return new JsonResult(new { gameId, playerGuid, picturesPerCard });
+            var playerAdded = AddNewPlayer(gameId, playerId);
+            return new JsonResult(new { gameId, playerAdded, picturesPerCard, picturesNames });
         }
 
         [HttpPost]
         public JsonResult JoinAsAdditionalDevice(string gameId)
         {
             int picturesPerCard = ApplicationManager.JoinGameManager(gameId);
+            var picturesNames = ApplicationManager.GameManagers[gameId].PicturesNames;
             string additionalDevice = ApplicationManager.GameManagers[gameId].GetNewDevice();
-            return new JsonResult(new { additionalDevice, picturesPerCard });
+            return new JsonResult(new { additionalDevice, picturesPerCard, picturesNames });
         }
 
         [HttpPost]
@@ -63,30 +65,25 @@ namespace DobblePOC.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetCardsPlayer(string gameId, string playerGuid)
-            => new JsonResult(ApplicationManager.GameManagers[gameId].GetCards(playerGuid));
+        public JsonResult GetCardsPlayer(string gameId, string playerId)
+            => new JsonResult(ApplicationManager.GameManagers[gameId].GetCards(playerId));
 
         [HttpGet]
         public JsonResult GetCenterCard(string gameId)
             => new JsonResult(ApplicationManager.GameManagers[gameId].CenterCard);
 
         [HttpPost]
-        public JsonResult Touch(string gameId, string playerGuid, DobbleCard cardPlayed, int valueTouch, DobbleCard centerCard, TimeSpan timeTakenToTouch)
-            => new JsonResult(ApplicationManager.Touch(gameId, playerGuid, cardPlayed, valueTouch, centerCard, timeTakenToTouch));
+        public JsonResult Touch(string gameId, string playerId, DobbleCard cardPlayed, int valueTouch, TimeSpan timeTakenToTouch)
+            => new JsonResult(ApplicationManager.Touch(gameId, playerId, cardPlayed, valueTouch, timeTakenToTouch));
 
         private List<string> GetRandomPicturesNames(int picturesNumber)
         {
             var fullNames = Directory.GetFiles(Path.Combine(WebHostEnvironment.WebRootPath, "pictures", "cardPictures")).OrderBy(_ => Guid.NewGuid()).Take(picturesNumber).ToList();
-            //var filesNames = new List<string>();
-            //fullNames.ForEach(fullName => filesNames.Add(Path.GetFileName(fullName)));
-
-
             return fullNames.Select(fullName => Path.GetFileName(fullName)).ToList();
-
-            //return filesNames;
         }
 
-        private string AddNewPlayer(string gameId)
-            => ApplicationManager.GameManagers[gameId].GetNewPlayer();
+        private bool AddNewPlayer(string gameId, string playerId)
+            //=> ApplicationManager.GameManagers[gameId].GetNewPlayer();
+            => ApplicationManager.GameManagers[gameId].AddNewPlayer(playerId);
     }
 }

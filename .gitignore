@@ -340,3 +340,4 @@ ASALocalRun/
 healthchecksdb
 /DobbleWeb/wwwroot/css/site.min.css
 /DobbleWeb/wwwroot/js/game.min.js
+/DobbleWeb/Properties/serviceDependencies.Dobble - Web Deploy.json

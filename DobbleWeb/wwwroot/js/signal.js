@@ -1,42 +1,54 @@
 ﻿//Hub Connection
 var ConnectionHubGame;
-function CallSignalR() {
+async function CallSignalR() {
     ConnectionHubGame = new signalR.HubConnectionBuilder().withUrl("/hubGame").withAutomaticReconnect().build();
-    ConnectionHubGame.start().catch(function (err) { return console.error(err.toString()); });
-    ConnectionHubGame.on("ReceivePlayersInGame", function (pseudos, gameMode) { ReceivePlayersInGame(pseudos, gameMode); });
+    await ConnectionHubGame.start().catch(function (err) { return console.error(err.toString()); });
+    PlayerId = ConnectionHubGame.connectionId;
+    ConnectionHubGame.on("ReceivePlayersInGame", function (pseudos, graphicMode) { ReceivePlayersInGame(pseudos, graphicMode); });
     ConnectionHubGame.on("ReceiveAdditionalDeviceInGame", function (additionalDevices) { ReceiveAdditionalDeviceInGame(additionalDevices); });
-    ConnectionHubGame.on("ReceiveStartGame", function (centerCard, picturesNames) { ReceiveStartGame(centerCard, picturesNames); });
+    ConnectionHubGame.on("ReceivePicturesLoaded", function () { ReceivePicturesLoaded(); });
+    ConnectionHubGame.on("ReceiveStartGame", function (centerCard) { ReceiveStartGame(centerCard); });
     ConnectionHubGame.on("ReceiveChangeCenterCard", function (pseudo, centerCard) { ReceiveChangeCenterCard(pseudo, centerCard); });
     ConnectionHubGame.on("ReceiveGameFinished", function (pseudo) { ReceiveGameFinished(pseudo); });
+
 }
 
 //Send
 function SendPlayerInGame() {
-    ConnectionHubGame.invoke("HubPlayerInGame", GameId, ThisPseudo, GameMode).catch(function (err) { return console.error(err.toString()); });
-};
+    console.log("SendPlayerInGame");
+    ConnectionHubGame.invoke("HubPlayerInGame", GameId, Pseudo, GraphicMode).catch(function (err) { return console.error(err.toString()); });
+}
 
 function SendAdditionalDeviceInGame() {
     ConnectionHubGame.invoke("HubAdditionalDeviceInGame", GameId, ThisAdditionalDevice).catch(function (err) { return console.error(err.toString()); });
-};
+}
 
+function SendPicturesLoaded() {
+    ConnectionHubGame.invoke("HubPicturesLoaded", GameId).catch(function (err) { return console.error(err.toString()); });
+}
 
-function SendStartGame(centerCard, picturesNames) {
-    ConnectionHubGame.invoke("HubStartGame", GameId, centerCard, picturesNames).catch(function (err) { return console.error(err.toString()); });
+function SendStartGame(centerCard) {
+    ConnectionHubGame.invoke("HubStartGame", GameId, centerCard).catch(function (err) { return console.error(err.toString()); });
 }
 
 function SendChangeCenterCard(centerCard) {
-    ConnectionHubGame.invoke("HubChangeCenterCard", GameId, ThisPseudo, centerCard).catch(function (err) { return console.error(err.toString()); });
-};
+    ConnectionHubGame.invoke("HubChangeCenterCard", GameId, Pseudo, centerCard).catch(function (err) { return console.error(err.toString()); });
+}
 
 function SendGameFinished() {
-    ConnectionHubGame.invoke("HubGameFinished", GameId, ThisPseudo).catch(function (err) { return console.error(err.toString()); });
-};
+    ConnectionHubGame.invoke("HubGameFinished", GameId, Pseudo).catch(function (err) { return console.error(err.toString()); });
+}
 
 //Receive
-async function ReceivePlayersInGame(pseudos, gameMode) {
-    GameMode = gameMode;
-    ShowPlayersInGame(pseudos);
+async function ReceivePlayersInGame(players, graphicMode) {
+    GraphicMode = graphicMode;
+    ShowPlayersInGame(players);
     ShowOrHideSections();
+    HideGameReady();
+}
+
+async function ReceivePicturesLoaded() {
+    ShowGameReady();
 }
 
 async function ReceiveAdditionalDeviceInGame(additionalDevices) {
@@ -46,20 +58,16 @@ async function ReceiveAdditionalDeviceInGame(additionalDevices) {
     //autre chose ?
 }
 
-async function ReceiveStartGame(centerCard, picturesNames) {
-    if (ThisPlayerGuid !== undefined) {
-        Decounter = 5;
+async function ReceiveStartGame(centerCard) {
+    if (PlayerAdded) {
+        Decounter = 3;
         DomAddDecounter();
         DecounterLunchGame();
         IntervalDecounterLunchGame = setInterval(function () { DecounterLunchGame(); }, 1000);
         GetCardsPlayer();
-        PicturesNames = picturesNames;
-        PreloadAllCardPictures();
         GetCenterCard(centerCard);
     }
     else { //todo IntervalDecounterLunchGame idem au dessus
-        PicturesNames = picturesNames;
-        PreloadAllCardPictures();
         GetCenterCard(centerCard);
         $('#startGame').hide();
         $('#startGameWait').hide();

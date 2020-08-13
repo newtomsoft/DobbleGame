@@ -59,6 +59,13 @@ namespace DobbleManager
             return playerGuid;
         }
 
+        public bool AddNewPlayer(string playerId)
+        {
+            if (GameStatus != GameStatus.ReadyToStart) return false;
+            PlayersGuids_Cards.Add(playerId, (0, new List<DobbleCard>()));
+            return true;
+        }
+
         public string GetNewDevice()
         {
             if (GameStatus != GameStatus.ReadyToStart) return string.Empty;

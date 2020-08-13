@@ -2,41 +2,64 @@
     Url = new URL(window.location.href);
     GameId = Url.searchParams.get("game");
     if (GameId !== null) ModeInvitGame = true;
-    CallSignalR();
     Init();
 });
 
-var Url
-var ModeInvitGame
+var Url;
+var ModeInvitGame;
 var GameId;
-var ThisPseudo;
-var GameMode; // rowMode, likeDubbleMode
+var PlayerId;
+var Pseudo;
+var GraphicMode; // row, dubbleLike
 var PseudosInGame = [];
 var ThisAdditionalDevice;
 var AdditionalDevices = [];
 var PlayerCards;
-var PicturesPerCard;
-var ThisPlayerGuid;
 var CenterCard;
+var PicturesPerCard;
+var GamePicturesNumber;
+var PlayerAdded = false;
 var DateEvent;
 var PicturesNames = [];
+var PicturesPlayer = [];
+var PicturesCenter = [];
 var IntervalDecounterLunchGame;
 var Decounter;
+var GameOwner = false;
 
 function Init() {
     $('#createGameForm').submit(function () { CreateGame(); });
-    $('#joinGameForm').submit(function () { CallJoinGame(); });
-    $('#invitGameForm').submit(function () { CallInvitGame(); });
-    $('#joinDeviceGameForm').submit(function () { CallJoinGameAsAdditionalDevice(); });
+    $('#joinGameForm').submit(function () { JoinGame(); });
+    $('#invitGameForm').submit(function () { InvitGame(); });
+    $('#joinDeviceGameForm').submit(function () { JoinGameAsAdditionalDevice(); });
     $('#startGameButton').click(function () { CallStartGame(); });
     ShowOrHideSections();
 }
 
-function CreateGame() {
+async function CreateGame() {
+    await CallSignalR();
     PicturesPerCard = $('#picturesNumber').val();
-    ThisPseudo = $('#pseudoCreateGame').val();
-    GameMode = $('#gameMode').val();
+    Pseudo = $('#pseudoCreateGame').val();
+    GraphicMode = $('#gameMode').val();
+    GameOwner = true;
     CallCreateGame();
+}
+
+async function JoinGame() {
+    await CallSignalR();
+    GameId = $('#gameIdJoinGame').val().toUpperCase();
+    Pseudo = $('#pseudoJoinGame').val();
+    CallJoinGame();
+}
+
+async function InvitGame() {
+    await CallSignalR();
+    Pseudo = $('#pseudoInvitGame').val();
+    CallInvitGame();
+}
+async function JoinGameAsAdditionalDevice() {
+    await CallSignalR();
+    CallJoinGameAsAdditionalDevice();
 }
 
 function PictureClickSubscribe() { $('.pictureClick').click(function () { CallTouchCard(this.attributes['value'].value); }); }
@@ -55,7 +78,7 @@ function ShowOrHideSections(mode) {
         HideWelcomeSection();
         ShowInvitGameSection();
     }
-    else if (ThisPseudo === undefined || GameId === null) {
+    else if (Pseudo === undefined || GameId === null) {
         HideGameSection();
         HideInvitGameSection();
         ShowWelcomeSection();
@@ -79,21 +102,25 @@ function ShowWelcomeSection() { $("#createJoinGameSection").show(); }
 function HideWelcomeSection() { $("#createJoinGameSection").hide(); }
 
 function ShowGameSection(mode) {
-    if (mode === "additionalDevice") {
-        $('#startGame').hide();
-        $('#startGameWait').hide();
+    if (mode === "additionalDevice") 
         $('#playerCard').hide();
-    }
-    else if (PseudosInGame[0].pseudo !== ThisPseudo) {
-        $('#startGame').hide();
+    else if (!GameOwner) 
         $('#startGameWait').html(`<b>En attente du lancement de la partie par ${PseudosInGame[0].pseudo}</b>`);
-        $('#startGameWait').show();
-    }
-    else {
-        $('#startGame').show();
-        $('#startGameWait').hide();
-    }
     $("#gameSection").show();
+}
+
+function ShowGameReady() {
+    $('#loadingGame').hide();
+    if (!GameOwner)
+        $('#startGameWait').show();
+    else
+        $('#startGame').show();
+}
+
+function HideGameReady() {
+    $('#loadingGame').show();
+    $('#startGameWait').hide();
+    $('#startGame').hide();
 }
 
 function HideGameSection() { $("#gameSection").hide(); }
@@ -109,13 +136,16 @@ function PrepareCards() {
 function PrepareCard(cardType, click) {
     let card;
     let domPictureId;
+    let pictures;
     if (cardType === "centerCard") {
         card = CenterCard;
         domPictureId = 'centerCardPicture';
+        pictures = PicturesCenter;
     }
     else if (cardType === "playerCard") {
         card = PlayerCards[0];
         domPictureId = 'playerCardPicture';
+        pictures = PicturesPlayer;
     }
     else {
         console.error("erreur sur le type de carte à afficher")
@@ -124,13 +154,13 @@ function PrepareCard(cardType, click) {
     let classClick = click ? 'pictureClick' : '';
     let cursor = click ? 'cursor-click' : '';
     $(`#${domPictureId}`).html("");
-    let picture = '';
     for (let i = 0; i < PicturesPerCard; i++) {
-        let url = Url.href.replace(Url.search, '').replace(Url.hash, '');;
-        let pictureUrl = `'${url}/pictures/cardPictures/${PicturesNames[card.picturesIds[i]]}'`;
-        picture += `<section id="${domPictureId}${i}" class="img-picture ${classClick} ${cursor}" style="background-image: url(${pictureUrl})" value="${card.picturesIds[i]}"></section>`;
+        let imageDom = pictures[card.picturesIds[i]];
+        imageDom.id = `${domPictureId}${i}`;
+        imageDom.className = `img-picture ${classClick} ${cursor}`;
+        imageDom.setAttribute('value', `${card.picturesIds[i]}`);
+        $(imageDom).appendTo(`#${domPictureId}`);
     }
-    $(picture).appendTo(`#${domPictureId}`);
     if (cardType === "playerCard")
         PictureClickSubscribe();
 }
@@ -190,16 +220,16 @@ function ShowGameFinished(winner) {
 
 function ChangeCenterCard(card) { CenterCard = card; }
 
-function ShowPlayersInGame(pseudos) {
+function ShowPlayersInGame(players) {
     PseudosInGame = [];
-    pseudos.forEach(pseudo => PseudosInGame.push({ pseudo: pseudo, cardsNumber: 0 }))
+    players.forEach(player => PseudosInGame.push({ pseudo: player.pseudo, cardsNumber: 0 }))
     let pseudosString = [];
     PseudosInGame.forEach(item => pseudosString.push(item.pseudo + " "))
     $('#pseudos').html('<h4>Joueurs présents:</h4>' + pseudosString);
 }
 
 function ShowGameIdInfo() {
-    if (ThisPlayerGuid == "") {
+    if (!PlayerAdded) {
         $('#gameIdInfo').html(`<h3>La partie n° ${GameId} n'est plus disponible</h3>`);
         return;
     }
@@ -209,19 +239,23 @@ function ShowGameIdInfo() {
     else
         url.searchParams.set('game', GameId);
     let whatsappLink = `https://api.whatsapp.com/send?text=Je viens de lancer une nouvelle partie de Dobble. Voici le lien : ${url.href}`;
-    $('#gameIdInfo').html(`<h3>Partie n° <a href="${url.href}">${GameId}</a> <a href="${whatsappLink}" target="_blank"><img alt="Whats'app" src="pictures/others/whatsApp.svg" width="30" height="30"</a></h3>`);
+    $('#gameIdInfo').html(`<h3>Partie n° <a href="${url.href}">${GameId}</a> <a href="${whatsappLink}"><img alt="Whats'app" src="pictures/others/whatsApp.svg" width="30" height="30"></a></h3>`);
 }
 
-function PreloadAllCardPictures() {
-    let totalPicturesNumber = PicturesPerCard * PicturesPerCard - PicturesPerCard + 1;
+function LoadAllCardPictures() {
+    let picturesLoadedNumber = 0;
     let url = Url.href.replace(Url.search, '');
-    //for (var i = 0; i < totalPicturesNumber; i++)
-    //    jQuery.get(url + `/pictures/cardPictures/${PicturesNames[i]}`)
-    let pics = [];
-    for (var i = 0; i < totalPicturesNumber; i++) {
-        pics[i] = `${url}pictures/cardPictures/${PicturesNames[i]}`;
+    for (var i = 0; i < GamePicturesNumber; i++) {
+        PicturesPlayer[i] = new Image();
+        $(PicturesPlayer[i]).on('load', function () {
+            picturesLoadedNumber++;
+            if (picturesLoadedNumber === GamePicturesNumber)
+                SendPicturesLoaded();
+        });
+        PicturesPlayer[i].src = `${url}pictures/cardPictures/${PicturesNames[i]}`;
+        PicturesCenter[i] = new Image();
+        PicturesCenter[i].src = PicturesPlayer[i].src;
     }
-    $.preload(pics, { ordered: false });
 }
 
 function PreparePlayersInfos() {
@@ -257,8 +291,7 @@ function LunchGame() {
 function DecounterLunchGame() {
     ShowDecounter(Decounter);
     if (Decounter === 0) {
-        DomFlashDecounter();
-        setTimeout(function () { DomRemoveDecounter(); }, 1200);
+        DomRemoveDecounter();
         clearInterval(IntervalDecounterLunchGame);
         LunchGame();
     }
@@ -268,17 +301,10 @@ function DecounterLunchGame() {
 function DomAddDecounter() { $('<div id="decounter"></div>').appendTo('#gameSection'); }
 function DomRemoveDecounter() { $('#decounter').remove(); }
 function ShowDecounter(countNumber) {
-    if (countNumber > 3) $('#decounter').attr('style', 'color:green;');
-    else if (countNumber > 1) $('#decounter').attr('style', 'color:orange;');
+    if (countNumber == 3) $('#decounter').attr('style', 'color:green;');
+    else if (countNumber == 2) $('#decounter').attr('style', 'color:orange;');
     else $('#decounter').attr('style', 'color:red;');
     $('#decounter').html(countNumber);
-}
-function DomFlashDecounter() {
-    for (let i = 0; i < 15; i++) {
-        $('#decounter').fadeToggle(70, function () {
-            $(this).fadeToggle(70);
-        });
-    }
 }
 
 function ScrollTo(hash) { location.hash = `#${hash}`; }
@@ -286,3 +312,13 @@ function ScrollTo(hash) { location.hash = `#${hash}`; }
 function ShowError(domId, errorText) {
     $(`#${domId}`).html(`${errorText[0]} : ${errorText[1]}`);
 }
+
+IncrementpicturesLoadNumber = (function () {
+    let variableName = 0;
+    let init = function () {
+        variableName += 1;
+        if (variableName === GamePicturesNumber)
+            alert(variableName);
+    }
+    return init;
+})();

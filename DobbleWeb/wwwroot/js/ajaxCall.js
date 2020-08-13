@@ -2,29 +2,26 @@ function CallCreateGame() {
     $.ajax({
         url: '/Game/Create',
         type: 'POST',
-        data: { picturesPerCard: PicturesPerCard },
+        data: { picturesPerCard: PicturesPerCard, playerId: PlayerId },
         success: function (data) { CallbackCreateOrJoinGame(data); },
     });
 }
 
 function CallJoinGame() {
-    GameId = $('#gameIdJoinGame').val().toUpperCase();
-    ThisPseudo = $('#pseudoJoinGame').val();
     $.ajax({
         url: '/Game/Join',
         type: 'POST',
-        data: { gameId: GameId },
+        data: { gameId: GameId, playerId: PlayerId },
         success: function (data) { CallbackCreateOrJoinGame(data); },
         error: function (err) { ShowError('errorJoinGame', err.responseText); },
     });
 }
 
 function CallInvitGame() {
-    ThisPseudo = $('#pseudoInvitGame').val();
     $.ajax({
         url: '/Game/Join',
         type: 'POST',
-        data: { gameId: GameId },
+        data: { gameId: GameId, playerId: PlayerId },
         success: function (data) { CallbackCreateOrJoinGame(data); },
     });
 }
@@ -62,7 +59,7 @@ function GetCenterCard(card) {
 function GetCardsPlayer() {
     $.ajax({
         url: '/Game/GetCardsPlayer',
-        data: { gameId: GameId, playerGuid: ThisPlayerGuid },
+        data: { gameId: GameId, playerId: PlayerId },
         success: function (data) { CallbackGetCardsPlayer(data); },
     });
 }
@@ -72,7 +69,7 @@ function CallTouchCard(valueTouch) {
     $.ajax({
         url: '/Game/Touch',
         type: 'POST',
-        data: { gameId: GameId, playerGuid: ThisPlayerGuid, cardPlayed: PlayerCards[0], valueTouch: valueTouch, centerCard: CenterCard/*, timeTakenToTouch: 500*/ },
+        data: { gameId: GameId, playerId: PlayerId, cardPlayed: PlayerCards[0], valueTouch: valueTouch/*, timeTakenToTouch: 500*/ },
         success: function (data) { CallbackTouch(data); },
     });
 }
