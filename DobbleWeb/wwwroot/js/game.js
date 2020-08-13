@@ -83,6 +83,11 @@ function ShowOrHideSections(mode) {
         HideInvitGameSection();
         ShowWelcomeSection();
     }
+    else if (!PlayerAdded) {
+        HideWelcomeSection();
+        HideInvitGameSection();
+        HideGameSection();
+    }
     else {
         HideWelcomeSection();
         HideInvitGameSection();
@@ -102,9 +107,9 @@ function ShowWelcomeSection() { $("#createJoinGameSection").show(); }
 function HideWelcomeSection() { $("#createJoinGameSection").hide(); }
 
 function ShowGameSection(mode) {
-    if (mode === "additionalDevice") 
+    if (mode === "additionalDevice")
         $('#playerCard').hide();
-    else if (!GameOwner) 
+    else if (!GameOwner)
         $('#startGameWait').html(`<b>En attente du lancement de la partie par ${PseudosInGame[0].pseudo}</b>`);
     $("#gameSection").show();
 }
@@ -230,7 +235,8 @@ function ShowPlayersInGame(players) {
 
 function ShowGameIdInfo() {
     if (!PlayerAdded) {
-        $('#gameIdInfo').html(`<h3>La partie n° ${GameId} n'est plus disponible</h3>`);
+        $('#gameDontExist').html(`<h3>La partie n° ${GameId} n'est plus disponible</h3>`);
+        $('#gameDontExist').show();
         return;
     }
     let url = Url
