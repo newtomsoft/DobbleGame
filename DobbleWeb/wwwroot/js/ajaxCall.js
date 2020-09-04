@@ -64,12 +64,11 @@ function GetCardsPlayer() {
     });
 }
 
-function CallTouchCard(valueTouch) {
-    PictureClickUnsubscribe();
+function CallTouchCard(pictureId) {
     $.ajax({
         url: '/Game/Touch',
         type: 'POST',
-        data: { gameId: GameId, playerId: PlayerId, cardPlayed: PlayerCards[0], valueTouch: valueTouch/*, timeTakenToTouch: 500*/ },
+        data: { gameId: GameId, playerId: PlayerId, cardPlayed: PlayerCards[0], pictureId: pictureId, touchDelay: DateCardTouched - DateCardsShown },
         success: function (data) { CallbackTouch(data); },
     });
 }

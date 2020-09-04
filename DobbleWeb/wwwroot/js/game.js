@@ -11,7 +11,7 @@ var GameId;
 var PlayerId;
 var Pseudo;
 var GraphicMode; // row, dubbleLike
-var PseudosInGame = [];
+var Players = [];
 var ThisAdditionalDevice;
 var AdditionalDevices = [];
 var PlayerCards;
@@ -26,13 +26,15 @@ var PicturesCenter = [];
 var IntervalDecounterLunchGame;
 var Decounter;
 var GameOwner = false;
+var DateCardsShown;
+var DateCardTouched;
 
 function Init() {
-    $('#createGameForm').submit(function () { CreateGame(); });
-    $('#joinGameForm').submit(function () { JoinGame(); });
-    $('#invitGameForm').submit(function () { InvitGame(); });
-    $('#joinDeviceGameForm').submit(function () { JoinGameAsAdditionalDevice(); });
-    $('#startGameButton').click(function () { CallStartGame(); });
+    $('#createGameForm').submit(CreateGame);
+    $('#joinGameForm').submit(JoinGame);
+    $('#invitGameForm').submit(InvitGame);
+    $('#joinDeviceGameForm').submit(JoinGameAsAdditionalDevice);
+    $('#startGameButton').click(CallStartGame);
     ShowOrHideSections();
 }
 
@@ -62,9 +64,26 @@ async function JoinGameAsAdditionalDevice() {
     CallJoinGameAsAdditionalDevice();
 }
 
-function PictureClickSubscribe() { $('.pictureClick').click(function () { CallTouchCard(this.attributes['value'].value); }); }
+// todo gestion du click intempestif
+function PictureClickSubscribe() {
+    $('.pictureClick').off("click");
+    $('.pictureClick').click(function () { TouchCard(this.attributes['value'].value); });
+}
 
-function PictureClickUnsubscribe() { $('.pictureClick').off("click"); }
+function PictureClickUnsubscribe() {
+    $('.pictureClick').off("click");
+    $('.pictureClick').click(function () { TouchCardFake(); });
+}
+
+function TouchCardFake(){
+    console.log("TouchCardFake");
+}
+
+function TouchCard(pictureId) {
+    DateCardTouched = Date.now();
+    PictureClickUnsubscribe();
+    CallTouchCard(pictureId);
+}
 
 function ShowOrHideSections(mode) {
     if (mode === "additionalDevice") {
@@ -110,7 +129,7 @@ function ShowGameSection(mode) {
     if (mode === "additionalDevice")
         $('#playerCard').hide();
     else if (!GameOwner)
-        $('#startGameWait').html(`<b>En attente du lancement de la partie par ${PseudosInGame[0].pseudo}</b>`);
+        $('#startGameWait').html(`<b>En attente du lancement de la partie par ${Players[0].pseudo}</b>`);
     $("#gameSection").show();
 }
 
@@ -156,6 +175,12 @@ function PrepareCard(cardType, click) {
         console.error("erreur sur le type de carte à afficher")
         return;
     }
+
+    if (card === undefined) {
+        $(`#${domPictureId}`).html("<b>Vous avez gagné la partie !<b>");
+        return;
+    }
+
     let classClick = click ? 'pictureClick' : '';
     let cursor = click ? 'cursor-click' : '';
     $(`#${domPictureId}`).html("");
@@ -178,6 +203,7 @@ function ShowCards() {
         ShowPlayerCardsNumber();
         ScrollTo('centerCard');
     }
+    DateCardsShown = Date.now();
 }
 
 function ShowCenterCard() { $('#centerCardPicture').show(); }
@@ -216,25 +242,29 @@ function ChangePlayerCard() {
 function ShowPlayerCardsNumber() { $('#cardsNumber').html(`Il vous reste : ${PlayerCards.length} cartes`); }
 
 function ShowGameFinished(winner) {
-    const pseudosRankings = PseudosInGame.sort(ComparePseudosCardsNumber);
-    let text = '';
-    pseudosRankings.forEach(item => text += item.pseudo + " a " + item.cardsNumber + " carte(s)\n");
-    alert(`Partie gagnée par ${winner}\n${text}`);
+    const playersSorted = Players.sort(ComparePseudosCardsNumber);
+    let textRanking = '';
+    for (let i = 1; i < playersSorted.length; i++)
+        textRanking += playersSorted[i].pseudo + " a " + playersSorted[i].cardsNumber + " carte(s)\n";
+    alert(`Partie gagnée par ${winner}\n${textRanking}`);
     //todo show popup
 }
 
 function ChangeCenterCard(card) { CenterCard = card; }
 
 function ShowPlayersInGame(players) {
-    PseudosInGame = [];
-    players.forEach(player => PseudosInGame.push({ pseudo: player.pseudo, cardsNumber: 0 }))
+    Players = [];
+    players.forEach(player => Players.push({ pseudo: player.pseudo, cardsNumber: 0 }))
     let pseudosString = [];
-    PseudosInGame.forEach(item => pseudosString.push(item.pseudo + " "))
+    Players.forEach(player => pseudosString.push(player.pseudo + " "))
     $('#pseudos').html('<h4>Joueurs présents:</h4>' + pseudosString);
 }
 
 function ShowGameIdInfo() {
     if (!PlayerAdded) {
+        HideWelcomeSection();
+        HideInvitGameSection();
+        HideGameSection();
         $('#gameDontExist').html(`<h3>La partie n° ${GameId} n'est plus disponible</h3>`);
         $('#gameDontExist').show();
         return;
@@ -245,7 +275,7 @@ function ShowGameIdInfo() {
     else
         url.searchParams.set('game', GameId);
     let whatsappLink = `https://api.whatsapp.com/send?text=Je viens de lancer une nouvelle partie de Dobble. Voici le lien : ${url.href}`;
-    $('#gameIdInfo').html(`<h3>Partie n° <a href="${url.href}">${GameId}</a> <a href="${whatsappLink}"><img alt="Whats'app" src="pictures/others/whatsApp.svg" width="30" height="30"></a></h3>`);
+    $('#gameIdInfo').html(`<h3>Partie n° <a href="${url.href}">${GameId}</a> <a href="${whatsappLink}" target="_blank"><img alt="Whats'app" src="pictures/others/whatsApp.svg" width="30" height="30"></a></h3>`);
 }
 
 function LoadAllCardPictures() {
@@ -265,21 +295,21 @@ function LoadAllCardPictures() {
 }
 
 function PreparePlayersInfos() {
-    PseudosInGame.forEach(item => item.cardsNumber = PlayerCards.length);
+    Players.forEach(item => item.cardsNumber = PlayerCards.length);
 }
 
 function ShowPlayersInfos() {
     let pseudosString = [];
     if (ThisAdditionalDevice !== undefined)
-        PseudosInGame.forEach(item => pseudosString.push(`${item.pseudo} (${item.cardsNumber}) `));
+        Players.forEach(player => pseudosString.push(`${player.pseudo} (${player.cardsNumber}) `));
     else
-        PseudosInGame.forEach(item => pseudosString.push(`${item.pseudo} `)); // todo temp en attendant de recevoir le nombre de carte
+        Players.forEach(player => pseudosString.push(`${player.pseudo} `)); // todo temp en attendant de recevoir le nombre de carte
     $('#pseudos').html('<h4>Joueurs présents:</h4>' + pseudosString);
 }
 
 function ShowPlayerPutDownCard(pseudo) {
-    const indexFound = PseudosInGame.findIndex(item => item.pseudo == pseudo);
-    PseudosInGame[indexFound].cardsNumber--;
+    const indexFound = Players.findIndex(player => player.pseudo == pseudo);
+    Players[indexFound].cardsNumber--;
     ShowPlayersInfos();
 }
 

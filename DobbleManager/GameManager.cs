@@ -13,6 +13,7 @@ namespace DobbleManager
         public int PicturesPerCard { get; }
         public List<string> PicturesNames { get; private set; }
         public object GameManagerLock { get; } = new object();
+        public object SynchronisePlayersTouch { get; } = new object();
         public DateTime CreateDate { get; }
         public DobbleCard CenterCard { get; set; }
 

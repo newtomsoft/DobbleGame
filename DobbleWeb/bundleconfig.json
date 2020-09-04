@@ -13,6 +13,11 @@
       "wwwroot/js/ajaxCallback.js",
       "wwwroot/js/game.js",
       "wwwroot/js/signal.js"
-    ]
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    },
+    "sourceMap": false
   }
 ]

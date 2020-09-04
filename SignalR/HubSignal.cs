@@ -10,7 +10,6 @@ namespace SignalR.Hubs
     public class HubSignal : Hub
     {
         static private Dictionary<string, List<Player>> PlayersPerGame { get; set; } = new Dictionary<string, List<Player>>();
-        static private Dictionary<string, Game> GameMap { get; set; } = new Dictionary<string, Game>();
         static private Dictionary<string, string> GraphicModePerGame { get; set; } = new Dictionary<string, string>();
         static private Dictionary<string, List<string>> AdditionalDevicesPerGame { get; set; } = new Dictionary<string, List<string>>();
 
@@ -52,7 +51,7 @@ namespace SignalR.Hubs
             AdditionalDevicesPerGame.TryAdd(gameId, new List<string>());
             AdditionalDevicesPerGame[gameId].Add(additionalDevice);
             await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
-            await Clients.Group(gameId).SendAsync("ReceivePlayersInGame", PlayersPerGame[gameId]);
+            await Clients.Group(gameId).SendAsync("ReceivePlayersInGame", PlayersPerGame[gameId], GraphicModePerGame[gameId]);
             await Clients.OthersInGroup(gameId).SendAsync("ReceiveAdditionalDeviceInGame", AdditionalDevicesPerGame[gameId]);
         }
 

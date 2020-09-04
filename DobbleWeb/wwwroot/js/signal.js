@@ -15,7 +15,6 @@ async function CallSignalR() {
 
 //Send
 function SendPlayerInGame() {
-    console.log("SendPlayerInGame");
     ConnectionHubGame.invoke("HubPlayerInGame", GameId, Pseudo, GraphicMode).catch(function (err) { return console.error(err.toString()); });
 }
 
@@ -66,6 +65,7 @@ async function ReceiveStartGame(centerCard) {
         IntervalDecounterLunchGame = setInterval(function () { DecounterLunchGame(); }, 1000);
         GetCardsPlayer();
         GetCenterCard(centerCard);
+        DateCardsShown = Date.now()
     }
     else { //todo IntervalDecounterLunchGame idem au dessus
         GetCenterCard(centerCard);
@@ -74,20 +74,22 @@ async function ReceiveStartGame(centerCard) {
         PrepareCard("centerCard");
         PreparePlayersInfos();
         ShowPlayersInfos();
+        DateCardsShown = Date.now()
     }
 }
 
 async function ReceiveChangeCenterCard(pseudo, centerCard) {
     ChangeCenterCard(centerCard);
     PrepareCards();
-    ShowCards()
+    ShowCards();
+    //DateCardsShown = Date.now();
     ShowPlayerPutDownCard(pseudo);
 }
 
 async function ReceiveGameFinished(pseudo) {
     ShowPlayerPutDownCard(pseudo);
     PrepareCards();
-    ShowCards()
+    ShowCards();
     ShowGameFinished(pseudo);
 }
 
