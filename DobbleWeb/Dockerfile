@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.9-buster-slim-arm32v7 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.403-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1.403-buster-arm32v7 AS build
 WORKDIR /src
 COPY ["DobbleWeb/DobbleWeb.csproj", "DobbleWeb/"]
 COPY ["SignalR/SignalR.csproj", "SignalR/"]
