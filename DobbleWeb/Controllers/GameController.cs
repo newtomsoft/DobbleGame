@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 
 
-namespace DobblePOC.Controllers
+namespace DobbleWeb.Controllers
 {
     public class GameController : Controller
     {
@@ -34,6 +34,7 @@ namespace DobblePOC.Controllers
             string gameId = ApplicationManager.CreateGameManager(picturesPerCard, picturesNames);
             if (gameId == string.Empty)
                 return new BadRequestObjectResult(new { error = $"Le nombre d'images par carte {picturesPerCard} n'est pas valide !" });
+            Logger.LogInformation($"New game to create {gameId} by playerId {playerId} with {picturesPerCard} pictures per card");
             var playerAdded = AddNewPlayer(gameId, playerId);
             Logger.LogInformation($"New game created {gameId} by playerId {playerId} with {picturesPerCard} pictures per card");
             return new JsonResult(new { gameId, playerAdded, picturesPerCard, picturesNames });

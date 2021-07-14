@@ -5,17 +5,14 @@ using Serilog.Core;
 using Serilog.Events;
 using System;
 
-namespace DobblePOC
+namespace DobbleWeb
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-#if DEBUG
             var loggingLevel = new LoggingLevelSwitch { MinimumLevel = LogEventLevel.Debug };
-#else
-            var loggingLevel = new LoggingLevelSwitch { MinimumLevel = LogEventLevel.Information };
-#endif
+
             Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .MinimumLevel.ControlledBy(loggingLevel)

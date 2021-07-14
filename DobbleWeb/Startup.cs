@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SignalR.Hubs;
 
-namespace DobblePOC
+namespace DobbleWeb
 {
     public class Startup
     {

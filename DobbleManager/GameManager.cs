@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +8,7 @@ namespace DobbleManager
     public class GameManager
     {
         private GameStatus GameStatus { get; set; }
-
+        private ILogger<ApplicationManager> _logger { get; }
         public Dictionary<string, (int indexCurrentCard, List<DobbleCard> Cards)> PlayersGuids_Cards { get; private set; }
         public int PlayersNumber { get => PlayersGuids_Cards.Count; }
         public int PicturesPerCard { get; }
@@ -18,8 +19,9 @@ namespace DobbleManager
         public DobbleCard CenterCard { get; set; }
 
 
-        public GameManager(int picturesNumber, List<string> picturesNames)
+        public GameManager(ILogger<ApplicationManager> logger, int picturesNumber, List<string> picturesNames)
         {
+            _logger = logger;
             PlayersGuids_Cards = new Dictionary<string, (int indexCurrentCard, List<DobbleCard> Cards)>();
             GameStatus = GameStatus.ReadyToStart;
             PicturesPerCard = picturesNumber;
@@ -62,6 +64,7 @@ namespace DobbleManager
 
         public bool AddNewPlayer(string playerId)
         {
+            _logger.LogInformation($"AddNewPlayer {playerId}");
             if (GameStatus != GameStatus.ReadyToStart) return false;
             PlayersGuids_Cards.Add(playerId, (0, new List<DobbleCard>()));
             return true;

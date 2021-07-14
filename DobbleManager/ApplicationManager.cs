@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Core;
-using Serilog.Events;
 
 namespace DobbleManager
 {
@@ -15,14 +12,14 @@ namespace DobbleManager
         private const int GAME_ID_LENGTH = 3;
         private const int MAX_GAME_LIFETIME_IN_HOURS = 1;
         private readonly int[] VALID_PICTURES_PER_CARD = { 3, 4, 6, 8, 12, 14, 18, 20 };
-        private readonly TimeSpan WAITING_TIME = new TimeSpan(0, 0, 0, 0, 333); // latence max entre l'équipement du joueur le plus rapide et le joueur le moins rapide
+        private readonly TimeSpan WAITING_TIME = TimeSpan.FromMilliseconds(333); // latence max entre l'équipement du joueur le plus rapide et le joueur le moins rapide
 
-        private ILogger<ApplicationManager> Logger { get; }
+        private ILogger<ApplicationManager> _logger { get; }
 
         public ApplicationManager(ILogger<ApplicationManager> logger)
         {
-            Logger = logger;
-            Logger.LogInformation("ApplicationManager lunched");
+            _logger = logger;
+            _logger.LogInformation("ApplicationManager lunched");
         }
 
         private Dictionary<(string gameId, string cardId), (DateTime receiveTime, int touchDelay)> CardManageTime { get; } = new Dictionary<(string, string), (DateTime, int)>();
@@ -41,7 +38,7 @@ namespace DobbleManager
             string gameId;
             do gameId = RandomId();
             while (GameManagers.ContainsKey(gameId));
-            GameManagers.Add(gameId, new GameManager(picturesPerCard, picturesNames));
+            GameManagers.Add(gameId, new GameManager(_logger, picturesPerCard, picturesNames));
             return gameId;
         }
 
@@ -70,32 +67,32 @@ namespace DobbleManager
                 var firstTouch = CardManageTime.TryAdd((gameId, centerCard.ToString()), (touchReceiveTime, touchDelay));
                 if (firstTouch)
                 {
-                    Logger.LogInformation($"-- Touch First - player {playerGuid} TouchReceiveTime : {touchReceiveTime:hh:mm:ss.fff} - TouchDelay {touchDelay}");
+                    _logger.LogInformation($"-- Touch First - player {playerGuid} TouchReceiveTime : {touchReceiveTime:hh:mm:ss.fff} - TouchDelay {touchDelay}");
                 }
                 else
                 {
-                    Logger.LogInformation($"-- Touch After - player {playerGuid} TouchReceiveTime : {touchReceiveTime:hh:mm:ss.fff} - TouchDelay {touchDelay}");
+                    _logger.LogInformation($"-- Touch After - player {playerGuid} TouchReceiveTime : {touchReceiveTime:hh:mm:ss.fff} - TouchDelay {touchDelay}");
                     timeToSleep = TimeSpan.MinValue;
                     var firstTouchReceiveTime = CardManageTime[(gameId, centerCard.ToString())].receiveTime;
                     var firstPlayerTouchDelay = CardManageTime[(gameId, centerCard.ToString())].touchDelay;
 
 #if DEBUG
-                    if (thisTouchReceiveTime - firstTouchReceiveTime <= WAITING_TIME && touchDelay < firstPlayerTouchDelay)
+                    if (touchReceiveTime - firstTouchReceiveTime <= WAITING_TIME && touchDelay < firstPlayerTouchDelay)
                     {
                         // ce touch est plus rapide
                         touchDelay = 10;
-                        CardManageTime[(gameId, centerCard.ToString())] = (thisTouchReceiveTime, touchDelay);
+                        CardManageTime[(gameId, centerCard.ToString())] = (touchReceiveTime, touchDelay);
                     }
 #else
                     if (touchReceiveTime - firstTouchReceiveTime <= WAITING_TIME && touchDelay < firstPlayerTouchDelay)
                     {
                         // cet appel est plus rapide
-                        Logger.LogInformation($"-- Call faster");
+                        _logger.LogInformation($"-- Call faster");
                         CardManageTime[(gameId, centerCard.ToString())] = (touchReceiveTime, touchDelay);
                     }
                     else
                     {
-                        Logger.LogInformation($"-- Call slower");
+                        _logger.LogInformation($"-- Call slower");
                     }
 #endif                 
                 }
