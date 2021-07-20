@@ -7,8 +7,8 @@ namespace DobbleManager
 {
     public class GameManager
     {
-        private GameStatus GameStatus { get; set; }
-        private ILogger<ApplicationManager> _logger { get; }
+        private GameStatus _gameStatus;
+        private readonly ILogger<ApplicationManager> _logger;
         public Dictionary<string, (int indexCurrentCard, List<DobbleCard> Cards)> PlayersGuids_Cards { get; private set; }
         public int PlayersNumber { get => PlayersGuids_Cards.Count; }
         public int PicturesPerCard { get; }
@@ -23,7 +23,7 @@ namespace DobbleManager
         {
             _logger = logger;
             PlayersGuids_Cards = new Dictionary<string, (int indexCurrentCard, List<DobbleCard> Cards)>();
-            GameStatus = GameStatus.ReadyToStart;
+            _gameStatus = GameStatus.ReadyToStart;
             PicturesPerCard = picturesNumber;
             PicturesNames = picturesNames;
             CreateDate = DateTime.Now;
@@ -44,8 +44,8 @@ namespace DobbleManager
 
         public void DistributeCards()
         {
-            if (GameStatus != GameStatus.ReadyToStart) return;
-            GameStatus = GameStatus.InProgress;
+            if (_gameStatus != GameStatus.ReadyToStart) return;
+            _gameStatus = GameStatus.InProgress;
             var cards = new DobbleCardsGame(PicturesPerCard).Cards;
             CenterCard = cards[0];
             int cardsNumberPerPlayer = (cards.Count - 1) / PlayersNumber;
@@ -56,7 +56,7 @@ namespace DobbleManager
 
         public string GetNewPlayer()
         {
-            if (GameStatus != GameStatus.ReadyToStart) return string.Empty;
+            if (_gameStatus != GameStatus.ReadyToStart) return string.Empty;
             var playerGuid = Guid.NewGuid().ToString("N");
             PlayersGuids_Cards.Add(playerGuid, (0, new List<DobbleCard>()));
             return playerGuid;
@@ -65,14 +65,14 @@ namespace DobbleManager
         public bool AddNewPlayer(string playerId)
         {
             _logger.LogInformation($"AddNewPlayer {playerId}");
-            if (GameStatus != GameStatus.ReadyToStart) return false;
+            if (_gameStatus != GameStatus.ReadyToStart) return false;
             PlayersGuids_Cards.Add(playerId, (0, new List<DobbleCard>()));
             return true;
         }
 
         public string GetNewDevice()
         {
-            if (GameStatus != GameStatus.ReadyToStart) return string.Empty;
+            if (_gameStatus != GameStatus.ReadyToStart) return string.Empty;
             return Guid.NewGuid().ToString("N");
         }
     }
