@@ -484,16 +484,12 @@ namespace DobbleManagerTest
 
             Dictionary<int, int> presence = new Dictionary<int, int>();
             for (int i = 0; i < CardsNumberExpected; i++)
-            {
                 presence.Add(i, 0);
-            }
+
             foreach (var DobbleCard in DobbleCards)
-            {
                 foreach (var value in DobbleCard.PicturesIds)
-                {
                     presence[value]++;
-                }
-            }
+
             return presence;
         }
 
