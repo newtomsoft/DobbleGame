@@ -230,7 +230,6 @@ namespace DobbleManagerTest
         }
 
         #region Only test if you make the GenerateCardsWithSameFirstValue method public
-#pragma warning disable S125
         //public class GenerateShould
         // Sections of code should not be commented out
         //{
@@ -464,7 +463,6 @@ namespace DobbleManagerTest
         //        Assert.Equal(cardExpected.Values, DobbleCards[iCard].Values);
         //    }
         //}
-#pragma warning restore S125 // Sections of code should not be commented out
         #endregion
 
 
@@ -482,7 +480,7 @@ namespace DobbleManagerTest
 
             var DobbleCards = new DobbleCardsGame(valuesNumber).Cards;
 
-            Dictionary<int, int> presence = new Dictionary<int, int>();
+            Dictionary<int, int> presence = new();
             for (int i = 0; i < CardsNumberExpected; i++)
                 presence.Add(i, 0);
 

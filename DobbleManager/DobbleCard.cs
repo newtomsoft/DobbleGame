@@ -20,7 +20,7 @@ namespace DobbleManager
 
         public override string ToString()
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             foreach (var pictureId in PicturesIds)
                 stringBuilder.Append(pictureId + "-");
 

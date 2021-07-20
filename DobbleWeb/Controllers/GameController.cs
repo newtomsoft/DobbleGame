@@ -70,27 +70,15 @@ namespace DobbleWeb.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetCardsPlayer(string gameId, string playerId)
-            => new JsonResult(ApplicationManager.GameManagers[gameId].GetCards(playerId));
+        public JsonResult GetCardsPlayer(string gameId, string playerId) => new(ApplicationManager.GameManagers[gameId].GetCards(playerId));
 
         [HttpGet]
-        public JsonResult GetCenterCard(string gameId)
-            => new JsonResult(ApplicationManager.GameManagers[gameId].CenterCard);
+        public JsonResult GetCenterCard(string gameId) => new(ApplicationManager.GameManagers[gameId].CenterCard);
 
         [HttpPost]
-        public JsonResult Touch(string gameId, string playerId, DobbleCard cardPlayed, int pictureId, int touchDelay)
-        {
-            var response = ApplicationManager.Touch(gameId, playerId, cardPlayed, pictureId, touchDelay);
-            Logger.LogInformation($"Touch Picture --> gameId {gameId} response : {response.Status} -- touchDelay {touchDelay} - playerId {playerId} - pictureId {pictureId}");
-            return new JsonResult(response);
-        }
-        private List<string> GetRandomPicturesNames(int picturesNumber)
-        {
-            var fullNames = Directory.GetFiles(Path.Combine(WebHostEnvironment.WebRootPath, "pictures", "cardPictures")).OrderBy(_ => Guid.NewGuid()).Take(picturesNumber).ToList();
-            return fullNames.Select(fullName => Path.GetFileName(fullName)).ToList();
-        }
+        public JsonResult Touch(string gameId, string playerId, DobbleCard cardPlayed, int pictureId, int touchDelay) => new(ApplicationManager.Touch(gameId, playerId, cardPlayed, pictureId, touchDelay));
 
-        private bool AddNewPlayer(string gameId, string playerId)
-            => ApplicationManager.GameManagers[gameId].AddNewPlayer(playerId);
+        private List<string> GetRandomPicturesNames(int picturesNumber) => Directory.GetFiles(Path.Combine(WebHostEnvironment.WebRootPath, "pictures", "cardPictures")).OrderBy(_ => Guid.NewGuid()).Take(picturesNumber).Select(fullName => Path.GetFileName(fullName)).ToList();
+        private bool AddNewPlayer(string gameId, string playerId) => ApplicationManager.GameManagers[gameId].AddNewPlayer(playerId);
     }
 }

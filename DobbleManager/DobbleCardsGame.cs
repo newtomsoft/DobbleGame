@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace DobbleManager
 {
@@ -13,13 +12,12 @@ namespace DobbleManager
         {
             GenerateAllCards(picturesPerCardNumber);
             ShuffleCards();
-            ShufflePicturesCards();
+            ShufflePicturesOnCards();
         }
 
-        private void ShufflePicturesCards()
+        private void ShufflePicturesOnCards()
         {
-            foreach (var card in Cards)
-                card.ShufflePictures();
+            foreach (var card in Cards) card.ShufflePictures();
         }
 
         private void ShuffleCards() => Cards = Cards.OrderBy(_ => Guid.NewGuid()).ToList();
@@ -53,7 +51,7 @@ namespace DobbleManager
             {
                 referenceCards = GenerateCardsWithSameFirstPicture(picturesNumber, firstPicture - 1);
                 for (int i = 0; i < picturesNumber - 1; i++)
-                    dobbleCards.Add(new DobbleCard(firstPicture));
+                    dobbleCards.Add(new DobbleCard(1));
 
                 for (int iCard = 0; iCard < picturesNumber - 1; iCard++)
                     for (int iPicture = 0; iPicture < picturesNumber - 1; iPicture++)
@@ -73,29 +71,6 @@ namespace DobbleManager
 
             dobbleCards.AddRange(referenceCards);
             return dobbleCards;
-        }
-
-        public override string ToString()
-        {
-            int picturesPerCardNumber = Cards[0].PicturesIds.Count;
-            const string separator = "   ";
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < Cards.Count - picturesPerCardNumber; i++)
-            {
-                stringBuilder.Append(Cards[i].ToString());
-                if ((i + 1) % (picturesPerCardNumber - 1) == 0)
-                    stringBuilder.Append("\n");
-                else
-                    stringBuilder.Append(separator);
-            }
-            stringBuilder.Remove(stringBuilder.Length - "\n".Length, "\n".Length);
-            stringBuilder.Append("\n");
-            for (int i = Cards.Count - picturesPerCardNumber; i < Cards.Count; i++)
-            {
-                stringBuilder.Append(Cards[i].ToString());
-                stringBuilder.Append(separator);
-            }
-            return stringBuilder.ToString();
         }
     }
 }

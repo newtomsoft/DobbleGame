@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Core;
@@ -11,15 +11,13 @@ namespace DobbleWeb
     {
         public static void Main(string[] args)
         {
-            var loggingLevel = new LoggingLevelSwitch { MinimumLevel = LogEventLevel.Debug };
-
             Log.Logger = new LoggerConfiguration()
-            .Enrich.FromLogContext()
-            .MinimumLevel.ControlledBy(loggingLevel)
-            .WriteTo.Console()
-            .WriteTo.File("logs/log.log")
-            .WriteTo.Seq("http://localhost:5341")
-            .CreateLogger();
+                .Enrich.FromLogContext()
+                .MinimumLevel.ControlledBy(new LoggingLevelSwitch { MinimumLevel = LogEventLevel.Debug })
+                .WriteTo.Console()
+                .WriteTo.File("logs/log.log")
+                .WriteTo.Seq("http://localhost:5341")
+                .CreateLogger();
 
             try
             {

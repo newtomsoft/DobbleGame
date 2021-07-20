@@ -14,7 +14,7 @@ namespace DobbleManager
         private readonly int[] VALID_PICTURES_PER_CARD = { 3, 4, 6, 8, 12, 14, 18, 20 };
         private readonly TimeSpan WAITING_TIME = TimeSpan.FromMilliseconds(333); // latence max entre l'équipement du joueur le plus rapide et le joueur le moins rapide
 
-        private ILogger<ApplicationManager> _logger { get; }
+        private readonly ILogger<ApplicationManager> _logger;
 
         public ApplicationManager(ILogger<ApplicationManager> logger)
         {
