@@ -16,11 +16,7 @@ namespace DobbleManager
 
         private readonly ILogger<ApplicationManager> _logger;
 
-        public ApplicationManager(ILogger<ApplicationManager> logger)
-        {
-            _logger = logger;
-            _logger.LogInformation("ApplicationManager lunched");
-        }
+        public ApplicationManager(ILogger<ApplicationManager> logger) => _logger = logger;
 
         private Dictionary<(string gameId, string cardId), (DateTime receiveTime, int touchDelay)> CardManageTime { get; } = new Dictionary<(string, string), (DateTime, int)>();
 
@@ -32,9 +28,8 @@ namespace DobbleManager
 
         public string CreateGameManager(int picturesPerCard, List<string> picturesNames)
         {
-            if (!VALID_PICTURES_PER_CARD.Contains(picturesPerCard))
-                return string.Empty;
-            FreeOldGameManagers(new TimeSpan(MAX_GAME_LIFETIME_IN_HOURS, 0, 0));
+            if (!VALID_PICTURES_PER_CARD.Contains(picturesPerCard)) return string.Empty;
+            FreeOldGameManagers(TimeSpan.FromHours(MAX_GAME_LIFETIME_IN_HOURS));
             string gameId;
             do gameId = RandomId();
             while (GameManagers.ContainsKey(gameId));
@@ -59,17 +54,11 @@ namespace DobbleManager
             lock (GameManagers[gameId].GameManagerLock)
             {
                 centerCard = GameManagers[gameId].CenterCard;
-                if (cardPlayed != GameManagers[gameId].GetCurrentCard(playerGuid))
-                    return new TouchResponse(TouchStatus.CardPlayedDontExist);
-                if (!centerCard.PicturesIds.Any(id => id == pictureId))
-                    return new TouchResponse(TouchStatus.WrongValueTouch);
+                if (cardPlayed != GameManagers[gameId].GetCurrentCard(playerGuid)) return new TouchResponse(TouchStatus.CardPlayedDontExist);
+                if (!centerCard.PicturesIds.Any(id => id == pictureId)) return new TouchResponse(TouchStatus.WrongValueTouch);
 
                 var firstTouch = CardManageTime.TryAdd((gameId, centerCard.ToString()), (touchReceiveTime, touchDelay));
-                if (firstTouch)
-                {
-                    _logger.LogInformation($"-- Touch First - player {playerGuid} TouchReceiveTime : {touchReceiveTime:hh:mm:ss.fff} - TouchDelay {touchDelay}");
-                }
-                else
+                if (!firstTouch)
                 {
                     _logger.LogInformation($"-- Touch After - player {playerGuid} TouchReceiveTime : {touchReceiveTime:hh:mm:ss.fff} - TouchDelay {touchDelay}");
                     timeToSleep = TimeSpan.MinValue;
@@ -79,23 +68,27 @@ namespace DobbleManager
 #if DEBUG
                     if (touchReceiveTime - firstTouchReceiveTime <= WAITING_TIME && touchDelay < firstPlayerTouchDelay)
                     {
-                        // ce touch est plus rapide
-                        touchDelay = 10;
-                        CardManageTime[(gameId, centerCard.ToString())] = (touchReceiveTime, touchDelay);
-                    }
-#else
-                    if (touchReceiveTime - firstTouchReceiveTime <= WAITING_TIME && touchDelay < firstPlayerTouchDelay)
-                    {
-                        // cet appel est plus rapide
                         _logger.LogInformation($"-- Call faster");
+                        touchDelay = 10;
                         CardManageTime[(gameId, centerCard.ToString())] = (touchReceiveTime, touchDelay);
                     }
                     else
                     {
                         _logger.LogInformation($"-- Call slower");
                     }
+#else
+                    if (touchReceiveTime - firstTouchReceiveTime <= WAITING_TIME && touchDelay < firstPlayerTouchDelay)
+                    {
+                        CardManageTime[(gameId, centerCard.ToString())] = (touchReceiveTime, touchDelay);
+                    }
 #endif                 
                 }
+#if DEBUG
+                else
+                {
+                    _logger.LogInformation($"-- Touch First - player {playerGuid} TouchReceiveTime : {touchReceiveTime:hh:mm:ss.fff} - TouchDelay {touchDelay}");
+                }
+#endif
             }
             // synchronisation de tous les appels
             if (timeToSleep == WAITING_TIME)
@@ -113,10 +106,8 @@ namespace DobbleManager
             {
                 centerCard = GameManagers[gameId].CenterCard;
                 CardManageTime.Remove((gameId, centerCard.ToString()));
-                if (cardPlayed != GameManagers[gameId].GetCurrentCard(playerGuid))
-                    return new TouchResponse(TouchStatus.CardPlayedDontExist);
-                if (!centerCard.PicturesIds.Any(id => id == pictureId))
-                    return new TouchResponse(TouchStatus.WrongValueTouch);
+                if (cardPlayed != GameManagers[gameId].GetCurrentCard(playerGuid)) return new TouchResponse(TouchStatus.CardPlayedDontExist);
+                if (!centerCard.PicturesIds.Any(id => id == pictureId)) return new TouchResponse(TouchStatus.WrongValueTouch);
 
                 GameManagers[gameId].CenterCard = cardPlayed;
                 if (GameManagers[gameId].IncreaseCardsCurrentIndex(playerGuid))
