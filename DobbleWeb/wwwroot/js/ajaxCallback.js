@@ -40,19 +40,16 @@ function CallbackGetCardsPlayer(data) {
 
 function CallbackTouch(data) {
     if (data.status === 1) { // status ok
-        console.log('picture touched ok');
         ChangePlayerCard();
         SendChangeCenterCard(data.centerCard);
     }
     else if (data.status === 2) {// game finished
-        console.log('picture touched ok. Game finished');
         SendChangeCenterCard(data.centerCard);
         ChangePlayerCard();
         SendGameFinished(Pseudo);
     }
     else {
-        console.log(`picture touched ko (code ${data.status})`);
-        let delayInMilliseconds = 1000;
+        let delayInMilliseconds = 800;
         setTimeout(function () { PictureClickSubscribe(); }, delayInMilliseconds);
     }
 }
