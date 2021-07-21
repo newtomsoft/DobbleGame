@@ -13,3 +13,15 @@
 .cursor-click {
     cursor: pointer;
 }
+
+.img-wrong-picture {
+    flex-shrink: 1;
+    height: 60px;
+    width: 60px;
+    margin: 5px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: red;
+    display: inline-block;
+}
