@@ -72,11 +72,6 @@ function PictureClickSubscribe() {
 
 function PictureClickUnsubscribe() {
     $('.pictureClick').off("click");
-    $('.pictureClick').click(function () { TouchCardFake(); });
-}
-
-function TouchCardFake(){
-    console.log("TouchCardFake");
 }
 
 function TouchCard(pictureId) {
@@ -358,3 +353,7 @@ IncrementpicturesLoadNumber = (function () {
     }
     return init;
 })();
+
+function ShowWrongPicture(pictureId) {
+    $('.img-picture.pictureClick[value = "' + pictureId + '"]').attr('class', 'img-wrong-picture');
+}

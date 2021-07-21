@@ -38,7 +38,7 @@ function CallbackGetCardsPlayer(data) {
     $('#startGameWait').hide();
 }
 
-function CallbackTouch(data) {
+function CallbackTouch(data, pictureId) {
     if (data.status === 1) { // status ok
         ChangePlayerCard();
         SendChangeCenterCard(data.centerCard);
@@ -49,6 +49,7 @@ function CallbackTouch(data) {
         SendGameFinished(Pseudo);
     }
     else {
+        ShowWrongPicture(pictureId);
         let delayInMilliseconds = 800;
         setTimeout(function () { PictureClickSubscribe(); }, delayInMilliseconds);
     }
