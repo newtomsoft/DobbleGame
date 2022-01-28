@@ -38,21 +38,19 @@ function CallbackGetCardsPlayer(data) {
     $('#startGameWait').hide();
 }
 
-function CallbackTouch(data) {
+function CallbackTouch(data, pictureId) {
     if (data.status === 1) { // status ok
-        console.log('picture touched ok');
         ChangePlayerCard();
         SendChangeCenterCard(data.centerCard);
     }
     else if (data.status === 2) {// game finished
-        console.log('picture touched ok. Game finished');
         SendChangeCenterCard(data.centerCard);
         ChangePlayerCard();
         SendGameFinished(Pseudo);
     }
     else {
-        console.log(`picture touched ko (code ${data.status})`);
-        let delayInMilliseconds = 1000;
+        ShowWrongPicture(pictureId);
+        const delayInMilliseconds = 800;
         setTimeout(function () { PictureClickSubscribe(); }, delayInMilliseconds);
     }
 }

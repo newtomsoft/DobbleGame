@@ -65,7 +65,7 @@ async function ReceiveStartGame(centerCard) {
         IntervalDecounterLunchGame = setInterval(function () { DecounterLunchGame(); }, 1000);
         GetCardsPlayer();
         GetCenterCard(centerCard);
-        DateCardsShown = Date.now()
+        DateCardsShown = Date.now();
     }
     else { //todo IntervalDecounterLunchGame idem au dessus
         GetCenterCard(centerCard);
@@ -74,7 +74,7 @@ async function ReceiveStartGame(centerCard) {
         PrepareCard("centerCard");
         PreparePlayersInfos();
         ShowPlayersInfos();
-        DateCardsShown = Date.now()
+        DateCardsShown = Date.now();
     }
 }
 
@@ -82,7 +82,6 @@ async function ReceiveChangeCenterCard(pseudo, centerCard) {
     ChangeCenterCard(centerCard);
     PrepareCards();
     ShowCards();
-    //DateCardsShown = Date.now();
     ShowPlayerPutDownCard(pseudo);
 }
 

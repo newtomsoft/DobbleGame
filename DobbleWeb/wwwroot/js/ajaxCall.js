@@ -69,6 +69,6 @@ function CallTouchCard(pictureId) {
         url: '/Game/Touch',
         type: 'POST',
         data: { gameId: GameId, playerId: PlayerId, cardPlayed: PlayerCards[0], pictureId: pictureId, touchDelay: DateCardTouched - DateCardsShown },
-        success: function (data) { CallbackTouch(data); },
+        success: function (data) { CallbackTouch(data, pictureId); },
     });
 }

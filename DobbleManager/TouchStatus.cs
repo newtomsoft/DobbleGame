@@ -1,10 +1,9 @@
-﻿namespace DobbleManager
+﻿namespace DobbleManager;
+
+public enum TouchStatus
 {
-    public enum TouchStatus
-    {
-        TouchOk = 1,
-        TouchOkAndGameFinish,
-        WrongValueTouch,
-        CardPlayedDontExist,
-    }
+    TouchOk = 1,
+    TouchOkAndGameFinish,
+    WrongValueTouch,
+    CardPlayedDontExist,
 }

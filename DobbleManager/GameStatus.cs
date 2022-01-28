@@ -1,8 +1,7 @@
-﻿namespace DobbleManager
+﻿namespace DobbleManager;
+
+public enum GameStatus
 {
-    public enum GameStatus
-    {
-        ReadyToStart = 1,
-        InProgress,
-    }
+    ReadyToStart = 1,
+    InProgress,
 }
