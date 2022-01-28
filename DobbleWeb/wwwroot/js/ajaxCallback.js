@@ -50,7 +50,7 @@ function CallbackTouch(data, pictureId) {
     }
     else {
         ShowWrongPicture(pictureId);
-        let delayInMilliseconds = 800;
+        const delayInMilliseconds = 800;
         setTimeout(function () { PictureClickSubscribe(); }, delayInMilliseconds);
     }
 }
